@@ -33,11 +33,11 @@ int main ()
      printf("set done!\n"); 
 
 
-     int write;
+     int write1;
      char buff='s';
      for(;;)
      {
-         write=write(fd,buff,10);
+         write1=write(fd,buff,10);
      }
      return 0;
 }

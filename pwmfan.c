@@ -7,53 +7,37 @@
 #include <termios.h>
 #include <errno.h>
 
-int comread(char buff[1024])
+int main ()
 {
     int fd;
-    fd = open("/dec/ttys0", O_RDWR);
-    if (-1 == fd)
+    fd=open("/dev/ttyUSB0",O_RDWR | O_NOCTTY | O_NONBLOCK);
+    if(fd==-1)
     {
-        cout << "不能打开串口" << endl;
+        printf("error");
     }
-    struct termios Opt;
-    tcgetattr(fd, &Opt);
-    cfsetispeed(&Opt, B9600);
-    cfsetospeed(&Opt, B9600);
-    tcsetattr(fd, TCANOW, &Opt);
-    options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
-    options.c_oflag &= ~OPOST;
-    char buff[1024];
-    int Len;
-    int readByte = read(fd, buff, Len);
-    close(fd);
-}
-int comwrite(char buffer[1024])
-{
-    int fd;
-    fd = open("/dec/ttys0", O_RDWR);
-    if (-1 == fd)
-    {
-        cout << "不能打开串口" << endl;
-    }
-    struct termios Opt;
-    tcgetattr(fd, &Opt);
-    cfsetispeed(&Opt, B9600);
-    cfsetospeed(&Opt, B9600);
-    tcsetattr(fd, TCANOW, &Opt);
-    options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
-    options.c_oflag &= ~OPOST;
-    int Length;
-    int nByte;
-    nByte = write(fd, buffer, Length);
-    close(fd);
-}
-int main()
+    struct termios newtio,oldtio;
+    newtio.c_cflag  |=  CLOCAL | CREAD;  
+    newtio.c_cflag &= ~CSIZE; 
+    newtio.c_cflag |= CS8; 
+    newtio.c_cflag &= ~PARENB;
+    cfsetispeed(&newtio, B9600); 
+    cfsetospeed(&newtio, B9600);
+    newtio.c_cflag |=  CSTOPB;
+    newtio.c_cc[VTIME]  = 0; 
+    newtio.c_cc[VMIN] = 0;
+    tcflush(fd,TCIFLUSH);
+    if((tcsetattr(fd,TCSANOW,&newtio))!=0) 
+     { 
+      perror("com set error"); 
+     } 
+     printf("set done!\n"); 
 
-{
-    for(;;)
-    {
-        comwrite('s')
-        
-    }
-    return 0;
+
+     int write;
+     char buff='s';
+     for(;;)
+     {
+         write=write(fd,buff,10);
+     }
+     return 0;
 }

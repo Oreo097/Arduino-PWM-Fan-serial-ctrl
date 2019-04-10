@@ -7,7 +7,32 @@
 #include <termios.h>
 #include <errno.h>
 
-int main ()
+
+char info[5]={0};
+
+int init();
+int gettemp();
+int calu();
+int putinfo();
+
+
+
+int main()
+{
+    printf("start");
+    init();
+    printf("done");
+    for(;;)
+    {
+        gettemp();
+        calu();
+        putinfo();
+        sleep(5);
+    }
+    return 0;
+}
+
+int init ()
 {
     int fd;
     fd=open("/dev/ttyUSB0",O_RDWR | O_NOCTTY | O_NONBLOCK);
@@ -33,11 +58,24 @@ int main ()
      printf("set done!\n"); 
 
 
-     int write1;
-     char buff='s';
-     for(;;)
-     {
-         write1=write(fd,buff,10);
-     }
-     return 0;
+     int write1,read1;
+     char wbuff='s';
+     char rbuff;
+     do
+         write1=write(fd,wbuff,1);
+         sleep(1);
+         read1=read(fd,rbuff,1);
+    while(rbuff!='s');
+}
+int gettemp()
+{
+
+}
+int calu()
+{
+
+}
+int putinfo()
+{
+
 }
